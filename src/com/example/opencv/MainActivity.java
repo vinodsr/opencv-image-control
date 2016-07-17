@@ -132,6 +132,10 @@ public class MainActivity extends Activity {
     // mImageView.setImageDrawable(d);
     //  mImageView.setImageBitmap(updateHSV(mBitmap, hue, sat, val));
      
+    Drawable test = new BitmapDrawable(mBitmap);
+   test. setColorFilter(Color.rgb(0, 96, 169), Mode.ADD);
+   mImageView.setImageDrawable(test);
+     /*
      Mat src = new Mat();
      Mat hsv = new Mat();
      Bitmap targetBitmap = Bitmap.createBitmap(mBitmap);
@@ -152,7 +156,7 @@ public class MainActivity extends Activity {
      Utils.matToBitmap(src, targetBitmap);
      mImageView.setImageBitmap(targetBitmap);
      //return hsv_channel.get(0);
-     
+     */
 
      }
     }
