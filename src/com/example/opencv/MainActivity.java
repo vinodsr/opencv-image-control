@@ -132,9 +132,9 @@ public class MainActivity extends Activity {
     // mImageView.setImageDrawable(d);
     //  mImageView.setImageBitmap(updateHSV(mBitmap, hue, sat, val));
      
-    Drawable test = new BitmapDrawable(mBitmap);
-   test. setColorFilter(Color.rgb(0, 96, 169), Mode.ADD);
-   mImageView.setImageDrawable(test);
+     Drawable test = new BitmapDrawable(mBitmap);
+     test. setColorFilter(Color.rgb(0, 96, 169), Mode.ADD);
+     mImageView.setImageDrawable(test);
      /*
      Mat src = new Mat();
      Mat hsv = new Mat();
@@ -375,6 +375,8 @@ public class MainActivity extends Activity {
 
         @Override
         protected Integer doInBackground(Integer... params) {
+        	
+        	try {
             Mat img = Imgcodecs.imread(mCurrentPhotoPath);
             Mat background = new Mat(img.size(), CvType.CV_8UC3,
                     new Scalar(255, 255, 255));
@@ -408,10 +410,33 @@ public class MainActivity extends Activity {
             System.out.println();
             Mat vals = new Mat(1, 1, CvType.CV_8UC3, new Scalar(0.0));
             background.copyTo(dst);
-
+            
             background.setTo(vals, mask);
 
-            Core.add(background, foreground, dst, mask);
+          /*  Bitmap testB = Bitmap.createBitmap(mBitmap);
+            Utils.matToBitmap(foreground, testB);   
+            Drawable test = new BitmapDrawable(testB);
+            test. setColorFilter(Color.rgb(0, 96, 169), Mode.ADD);
+            Bitmap icon = drawableToBitmap(test);
+            Utils.bitmapToMat(icon, foreground);*/
+            
+
+            Mat hsv = new Mat();
+
+            Imgproc.cvtColor(foreground, hsv,Imgproc.COLOR_RGB2HSV );   
+            List<Mat> hsv_channel = new ArrayList<Mat>();
+       	Core.split(hsv, hsv_channel);
+       	float[] hsvarray = {0,0,0};
+       	Color.RGBToHSV(0, 96, 169, hsvarray);
+            // Imgproc.equalizeHist(hsv_channel.get(0), hsv_channel.get(0));
+       	Log.d("TEST", hsvarray[0] + " , " + hsvarray[1] + " , " + hsvarray[2] * 100 + " , " );
+            hsv_channel.get(0).setTo(new Scalar(hsvarray[0]));
+           /* hsv_channel.get(1).setTo(new Scalar(hsvarray[1] * 100));
+             hsv_channel.get(2).setTo(new Scalar(hsvarray[2] * 100));*/
+            Core.merge(hsv_channel, hsv);
+            Imgproc.cvtColor(hsv, foreground,Imgproc.COLOR_HSV2RGB );  
+            
+            Core.add(background, foreground, dst);//, mask);
 
             firstMask.release();
             source.release();
@@ -420,8 +445,35 @@ public class MainActivity extends Activity {
             vals.release();
 
             Imgcodecs.imwrite(mCurrentPhotoPath + "_mod.png", dst);
-
+        	} catch ( Exception e) {
+        		e.printStackTrace();
+        	}
             return 0;
+        }
+        
+
+       
+        public  Bitmap drawableToBitmap (Drawable drawable) {
+            Bitmap bitmap = null;
+         
+            if (drawable instanceof BitmapDrawable) {
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+                if(bitmapDrawable.getBitmap() != null) {
+                    return bitmapDrawable.getBitmap();
+                }
+            }
+         
+            if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            	Log.d("TEST"," Single pixel" );
+                bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+            } else {
+                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            }
+         
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            return bitmap;
         }
 
         @Override
