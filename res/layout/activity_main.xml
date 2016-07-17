@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+ android:orientation="vertical"
+    tools:context="com.example.opencv.MainActivity" >
+
+    <ImageView
+       android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:id="@+id/imageview"
+        />
+<TextView 
+        android:id="@+id/texthue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hue" />
+    <SeekBar
+        android:id="@+id/huebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="511"
+        android:progress="256"/>
+    <TextView 
+        android:id="@+id/textsat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Saturation" />
+    <SeekBar
+        android:id="@+id/satbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="255"
+        android:progress="255"/>
+    <TextView 
+        android:id="@+id/textval"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Value" />
+    <SeekBar
+        android:id="@+id/valbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="255"
+        android:progress="255"/>
+</LinearLayout>
