@@ -144,7 +144,7 @@ public class ColorFilterGenerator {
 
     float x = 1 + ((value > 0) ? 3 * value / 100 : value / 100);
     float lumR = 0.3086f;
-    float lumG = 0.6094f;
+    float lumG = 0.6094f; 
     float lumB = 0.0820f;
 
     float[] mat = new float[]{
