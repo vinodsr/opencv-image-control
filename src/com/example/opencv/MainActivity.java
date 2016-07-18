@@ -23,6 +23,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.RectF;
@@ -114,7 +115,7 @@ public class MainActivity extends Activity {
     private void loadBitmapHSV() {
      if (mBitmap != null) {
 
-      int progressHue = hueBar.getProgress() - 256;
+      int progressHue = hueBar.getProgress() ;
       int progressSat = satBar.getProgress();
       int progressVal = valBar.getProgress();
 
@@ -135,8 +136,10 @@ public class MainActivity extends Activity {
     //  mImageView.setImageBitmap(updateHSV(mBitmap, hue, sat, val));
      
      Drawable test = new BitmapDrawable(mBitmap);
-     test. setColorFilter(Color.rgb(0, 96, 169), Mode.ADD);
-     mImageView.setImageDrawable(test);
+     ColorFilter colorFilter = ColorFilterGenerator.from(test).to(Color.RED);
+     colorFilter = ColorFilterGenerator.adjustHue(progressHue);
+     mImageView.setColorFilter(colorFilter);
+   //  mImageView.setImageDrawable(test);
      /*
      Mat src = new Mat();
      Mat hsv = new Mat();

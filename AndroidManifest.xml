@@ -3,7 +3,9 @@
     package="com.example.opencv"
     android:versionCode="1"
     android:versionName="1.0" >
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="21" />
@@ -16,6 +18,24 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Stage2"
+            android:label="Stage 2" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Stage3"
+            android:label="@string/title_activity_stage3" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
