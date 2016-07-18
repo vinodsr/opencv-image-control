@@ -128,6 +128,7 @@ public class ColorFilterGenerator {
     cm.postConcat(new ColorMatrix(mat));
 
   }
+<<<<<<< HEAD
   public static ColorFilter adjustSaturation( float value )
   {
       ColorMatrix cm = new ColorMatrix();
@@ -145,6 +146,18 @@ public class ColorFilterGenerator {
     float x = 1 + ((value > 0) ? 3 * value / 100 : value / 100);
     float lumR = 0.3086f;
     float lumG = 0.6094f; 
+=======
+
+  public static void adjustSaturation(ColorMatrix cm, float value) {
+    value = cleanValue(value, 100);
+    if (value == 0) {
+      return;
+    }
+
+    float x = 1 + ((value > 0) ? 3 * value / 100 : value / 100);
+    float lumR = 0.3086f;
+    float lumG = 0.6094f;
+>>>>>>> branch 'layer-filter-cut' of https://github.com/vinodsr/opencv-image-control.git
     float lumB = 0.0820f;
 
     float[] mat = new float[]{

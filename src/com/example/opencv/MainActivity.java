@@ -142,7 +142,7 @@ public class MainActivity extends Activity {
      ColorMatrix cm = new ColorMatrix();
     ColorFilterGenerator.adjustHue(cm,progressHue);
      ColorFilterGenerator.adjustSaturation(cm,sat);
-     ColorFilterGenerator.adjustBrightness(cm,val);
+     ColorFilterGenerator.adjustBrightness(cm,val); 
 
      mImageView.setColorFilter( new ColorMatrixColorFilter(cm));
    //  mImageView.setImageDrawable(test);

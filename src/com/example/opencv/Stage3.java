@@ -54,7 +54,7 @@ public class Stage3 extends Activity implements OnClickListener {
         findViewById(R.id.button2).setOnClickListener(this);
         findViewById(R.id.button3).setOnClickListener(this);
         findViewById(R.id.button4).setOnClickListener(this);
-        findViewById(R.id.button5).setOnClickListener(this);
+        findViewById(R.id.button5).setOnClickListener(this); 
         findViewById(R.id.button6).setOnClickListener(this);
 
         drawing = (TestView) findViewById(R.id.testview);
