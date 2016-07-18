@@ -165,16 +165,16 @@ public class TestView extends ImageView implements OnTouchListener {
         //int newHeight = rightX - leftX;
         //int newWidth = downY - upY;
 
-        Bitmap resultingImage = Bitmap.createBitmap(bitmapMain.getHeight(), bitmapMain.getWidth(),bitmapMain.getConfig());
+        Bitmap resultingImage = Bitmap.createBitmap(bitmapMain.getWidth(), bitmapMain.getHeight(),bitmapMain.getConfig());
         //resultingImage = bitmapMain;
-        
+     //   resultingImage = Bitmap.createScaledBitmap(bitmapMain, bitmapMain.getWidth(), dstHeight, filter)
         Canvas canvas = new Canvas(resultingImage);
         
     // canvas.
         Paint paint = new Paint();
       //  paint.setColor(Color.RED);
         paint.setAntiAlias(true);
-      //  paint.setColor(Color.RED);
+       //paint.setColor(Color.RED);
        Path pp = new Path();
        for (int i = 0; i < points.size() - 1; i++) {
 
@@ -216,7 +216,7 @@ float xscale = 1.6F , yscale = 1.2F ;
 
       //  canvas.drawPath(pp, paint);
         paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-      //  canvas.drawRect(0, 0, getMeasuredWidth() + 200, 100, paint);
+      // canvas.drawRect(0, 0, bitmapMain.getWidth(), 100, paint);
         canvas.drawBitmap(bitmapMain, 0, 0, paint);
 
         return resultingImage;

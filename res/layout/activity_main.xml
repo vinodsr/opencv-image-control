@@ -19,8 +19,8 @@
         android:id="@+id/huebar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="511"
-        android:progress="256"/>
+        android:max="180"
+        android:progress="0"/>
     <TextView 
         android:id="@+id/textsat"
         android:layout_width="match_parent"
@@ -30,8 +30,8 @@
         android:id="@+id/satbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="255"
-        android:progress="255"/>
+        android:max="100"
+        android:progress="100"/>
     <TextView 
         android:id="@+id/textval"
         android:layout_width="match_parent"
@@ -41,6 +41,6 @@
         android:id="@+id/valbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="255"
-        android:progress="255"/>
+        android:max="100"
+        android:progress="100"/>
 </LinearLayout>

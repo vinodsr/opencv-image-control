@@ -23,6 +23,9 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.RectF;
@@ -114,7 +117,7 @@ public class MainActivity extends Activity {
     private void loadBitmapHSV() {
      if (mBitmap != null) {
 
-      int progressHue = hueBar.getProgress() - 256;
+      int progressHue = hueBar.getProgress() ;
       int progressSat = satBar.getProgress();
       int progressVal = valBar.getProgress();
 
@@ -122,7 +125,7 @@ public class MainActivity extends Activity {
        * Hue (0 .. 360) Saturation (0...1) Value (0...1)
        */
 
-      float hue = (float) progressHue * 360 / 256;
+      float hue = (float) progressHue ;
       float sat = (float) progressSat ;
       float val = (float) progressVal ;
 
@@ -135,8 +138,14 @@ public class MainActivity extends Activity {
     //  mImageView.setImageBitmap(updateHSV(mBitmap, hue, sat, val));
      
      Drawable test = new BitmapDrawable(mBitmap);
-     test. setColorFilter(Color.rgb(0, 96, 169), Mode.ADD);
-     mImageView.setImageDrawable(test);
+     ColorFilter colorFilter = ColorFilterGenerator.from(test).to(Color.RED);
+     ColorMatrix cm = new ColorMatrix();
+    ColorFilterGenerator.adjustHue(cm,progressHue);
+     ColorFilterGenerator.adjustSaturation(cm,sat);
+     ColorFilterGenerator.adjustBrightness(cm,val);
+
+     mImageView.setColorFilter( new ColorMatrixColorFilter(cm));
+   //  mImageView.setImageDrawable(test);
      /*
      Mat src = new Mat();
      Mat hsv = new Mat();

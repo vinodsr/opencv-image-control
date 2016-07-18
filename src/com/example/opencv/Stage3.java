@@ -12,7 +12,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Point;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -48,6 +53,9 @@ public class Stage3 extends Activity implements OnClickListener {
         findViewById(R.id.button1).setOnClickListener(this);
         findViewById(R.id.button2).setOnClickListener(this);
         findViewById(R.id.button3).setOnClickListener(this);
+        findViewById(R.id.button4).setOnClickListener(this);
+        findViewById(R.id.button5).setOnClickListener(this);
+        findViewById(R.id.button6).setOnClickListener(this);
 
         drawing = (TestView) findViewById(R.id.testview);
 
@@ -89,9 +97,43 @@ public class Stage3 extends Activity implements OnClickListener {
             showCutImage();
             break;
         }
+        
+        case R.id.button4:
+        {
+        	applyFilter(Color.RED);
+            break;
+        }
+        
+        case R.id.button5:
+        {
+        	applyFilter(Color.YELLOW);
+            break;
+        }
+        
+        case R.id.button6:
+        {
+        	clearFilter();
+            break;
+        }
 
         }
 
+    }
+    
+    private void applyFilter(int color){
+    	Drawable d = drawing.getDrawable();
+    	
+    	
+        ColorFilter colorFilter = ColorFilterGenerator.from(d).to(color);
+        drawing.setColorFilter(colorFilter);
+    	
+    }
+    private void clearFilter(){
+    	
+    	
+        
+        drawing.clearColorFilter();
+    	
     }
 
     private boolean isDeviceSupportCamera() {
