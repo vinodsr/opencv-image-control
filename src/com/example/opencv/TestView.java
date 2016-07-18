@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -33,6 +34,7 @@ public class TestView extends ImageView implements OnTouchListener {
     private int rightX = 0;
     private int upY = 0;
     private int downY = 0;
+	private Path path;
 
     public TestView(Context c) {
         super(c);
@@ -79,9 +81,9 @@ public class TestView extends ImageView implements OnTouchListener {
 
        // canvas.drawBitmap(bitmap, 0, 0, null);
 
-        Path path = new Path();
+        path = new Path();
         boolean first = true;
-
+        if(points.size() > 0 ) {
         for (int i = 0; i < points.size(); i += 2) {
             Point point = points.get(i);
             if (first) {
@@ -94,7 +96,9 @@ public class TestView extends ImageView implements OnTouchListener {
                 path.lineTo(point.x, point.y);
             }
         }
+        path.lineTo(points.get(0).x,points.get(0).y);
         canvas.drawPath(path, paint);
+        }
     }
 
     public boolean onTouch(View view, MotionEvent event) {
@@ -114,6 +118,7 @@ public class TestView extends ImageView implements OnTouchListener {
             rightX = intX;
             downY = intY;
             upY = intY;
+            
         }
 
         Point point = new Point();
@@ -157,35 +162,61 @@ public class TestView extends ImageView implements OnTouchListener {
 
     //getting the size of the new bitmap
 
-        int newHeight = rightX - leftX;
-        int newWidth = downY - upY;
+        //int newHeight = rightX - leftX;
+        //int newWidth = downY - upY;
 
-        Bitmap resultingImage = Bitmap.createBitmap(newHeight, newWidth, Config.ARGB_8888);
-
+        Bitmap resultingImage = Bitmap.createBitmap(bitmapMain.getHeight(), bitmapMain.getWidth(),bitmapMain.getConfig());
+        //resultingImage = bitmapMain;
+        
         Canvas canvas = new Canvas(resultingImage);
+        
+    // canvas.
         Paint paint = new Paint();
+      //  paint.setColor(Color.RED);
         paint.setAntiAlias(true);
+      //  paint.setColor(Color.RED);
+       Path pp = new Path();
+       for (int i = 0; i < points.size() - 1; i++) {
 
-        Path path = new Path();
-        for (int i = 0; i < points.size() - 1; i++) {
-
-            path.quadTo((float)points.get(i).x, (float)points.get(i).y, (float)points.get(i+1).x, (float)points.get(i+1).y);
+            pp.quadTo((float)points.get(i).x, (float)points.get(i).y, (float)points.get(i+1).x, (float)points.get(i+1).y);
            // path.lineTo(points.get(i).x, points.get(i).y);
         }
 
 //closing the shape, connection last point to the first one
 
-        path.quadTo((float)points.get(points.size()-1).x, (float)points.get(points.size()-1).y, (float)points.get(0).x, (float)points.get(0).y);
+        pp.quadTo((float)points.get(points.size()-1).x, (float)points.get(points.size()-1).y, (float)points.get(0).x, (float)points.get(0).y);
 
          //drawing user shape
-
-       
-
+float xscale = 1.6F , yscale = 1.2F ; 
+        path = new Path();
+        boolean first = true;
+        if(points.size() > 0 ) {
+        for (int i = 0; i < points.size(); i += 2) {
+            Point point = new Point(points.get(i));
+            point.x *=  xscale;
+            point.y *= yscale;
+            if (first) {
+                first = false;
+                path.moveTo(point.x, point.y);
+            } else if (i < points.size() - 1) {
+                Point next = new Point(points.get(i + 1));
+                next.x *=  xscale;
+                next.y *= yscale;
+                path.quadTo(point.x, point.y, next.x, next.y);
+            } else {
+                path.lineTo(point.x, point.y);
+            }
+        }
+        path.lineTo(points.get(0).x * xscale,points.get(0).y * yscale);
+        canvas.drawPath(path, paint);
+        }
+        points.clear();
+        
          //getting image inside the shape
 
-        canvas.drawPath(path, paint);
+      //  canvas.drawPath(pp, paint);
         paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-        
+      //  canvas.drawRect(0, 0, getMeasuredWidth() + 200, 100, paint);
         canvas.drawBitmap(bitmapMain, 0, 0, paint);
 
         return resultingImage;

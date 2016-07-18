@@ -207,8 +207,10 @@ public class Stage3 extends Activity implements OnClickListener {
             options.inSampleSize = calculateInSampleSize(options, 200, 200);
 
         // Decode bitmap with inSampleSize set
+        options.inMutable=true;
         options.inJustDecodeBounds = false;
-        bmp = BitmapFactory.decodeFile(path, options);
+        bmp = BitmapFactory.decodeFile(path,options);
+        
 
         return bmp;
         }
