@@ -24,7 +24,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -42,7 +44,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class Stage2 extends Activity {
 
     static final int REQUEST_OPEN_IMAGE = 1;
 
@@ -56,7 +58,7 @@ public class MainActivity extends Activity {
     Point br;
     boolean targetChose = false;
     ProgressDialog dlg;
-
+    Path path = null;
     
     SeekBar hueBar, satBar, valBar;
     TextView hueText, satText, valText;
@@ -67,7 +69,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mImageView = (ImageView) findViewById(R.id.imageview);
-        
+        path = new Path();
         hueBar = (SeekBar) findViewById(R.id.huebar);
         satBar = (SeekBar) findViewById(R.id.satbar);
         valBar = (SeekBar) findViewById(R.id.valbar);
@@ -81,6 +83,7 @@ public class MainActivity extends Activity {
         dlg = new ProgressDialog(this);
         tl = new Point();
         br = new Point();
+        setTitle("Stage 2 ");
         if (!OpenCVLoader.initDebug()) {
             // Handle initialization error
         }
@@ -129,14 +132,12 @@ public class MainActivity extends Activity {
      hueText.setText("Hue: " + String.valueOf(hue));
       satText.setText("Saturation: " + String.valueOf(sat));
       valText.setText("Value: " + String.valueOf(val));
-     Drawable d = Drawable.createFromPath(mCurrentPhotoPath);
-     d.setColorFilter(Color.rgb(20, 255, 20), Mode.ADD);
+   //  Drawable d = Drawable.createFromPath(mCurrentPhotoPath);
+   //  d.setColorFilter(Color.rgb(20, 255, 20), Mode.ADD);
     // mImageView.setImageDrawable(d);
     //  mImageView.setImageBitmap(updateHSV(mBitmap, hue, sat, val));
      
-     Drawable test = new BitmapDrawable(mBitmap);
-     test. setColorFilter(Color.rgb(0, 96, 169), Mode.ADD);
-     mImageView.setImageDrawable(test);
+
      /*
      Mat src = new Mat();
      Mat hsv = new Mat();
@@ -283,6 +284,13 @@ public class MainActivity extends Activity {
             // this is our fallback here
             return uri.getPath();
     }
+    
+    private int leftX = 0;
+    private int rightX = 0;
+    private int upY = 0;
+    private int downY = 0;
+    
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -306,19 +314,36 @@ public class MainActivity extends Activity {
 
                         @Override
                         public boolean onTouch(View v, MotionEvent event) {
+                        	
+                        	  int intX = (int) (event.getX());
+                              int intY = (int) (event.getY());
+                              
+                              
                         	  if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         		  tl.x = event.getX();
                                   tl.y = event.getY();
+                                  
+                                  leftX = intX;
+                                  rightX = intX;
+                                  downY = intY;
+                                  upY = intY;
+                                  
+                                  path.reset();
+                                  path.moveTo(event.getX(), event.getY());
+                                  
                         	  } else   if (event.getAction() == MotionEvent.ACTION_MOVE) {
                         		  br.x = event.getX();
                                   br.y = event.getY();
-                        		   updateRectArea();
+                        		   drawPath();
+                                  path.lineTo(event.getX(), event.getY());
                         	  } else 
                             if (event.getAction() == MotionEvent.ACTION_UP) {
                             	  br.x = event.getX();
                                   br.y = event.getY();
 
-                                  updateRectArea();
+                                  path.lineTo(event.getX(), event.getY());
+                                  path.lineTo((float)tl.x,(float) tl.y);
+                                  drawPath();
 
                                   targetChose = true;
                                   touchCount = 0;
@@ -332,22 +357,32 @@ public class MainActivity extends Activity {
 
                                 }
                             }
-
+                        	  if(intX < leftX)
+                                  leftX =  intX;
+                              if(intX > rightX)
+                                  rightX = intX;
+                              if(intY > downY)
+                                  downY =  intY;
+                              if(intY < upY)
+                                  upY = intY;
                             return true;
                         }
 
-						private void updateRectArea() {
+                        
+                      
+						private void drawPath() {
 							Paint rectPaint = new Paint();
 							rectPaint.setARGB(255, 255, 0, 0);
 							rectPaint.setStyle(Paint.Style.STROKE);
 							rectPaint.setStrokeWidth(3);
-							Bitmap tmpBm = Bitmap.createBitmap(mBitmap.getWidth(),
-							        mBitmap.getHeight(), Bitmap.Config.RGB_565);
+							Bitmap tmpBm = Bitmap.createBitmap(mImageView.getWidth(),
+									mImageView.getHeight(), Bitmap.Config.RGB_565);
 							Canvas tmpCanvas = new Canvas(tmpBm);
 
 							tmpCanvas.drawBitmap(mBitmap, 0, 0, null);
-							tmpCanvas.drawRect(new RectF((float) tl.x, (float) tl.y, (float) br.x, (float) br.y),
-							        rectPaint);
+							/*tmpCanvas.drawRect(new RectF((float) tl.x, (float) tl.y, (float) br.x, (float) br.y),
+							        rectPaint);*/
+							tmpCanvas.drawPath(path, rectPaint);
 							mImageView.setImageDrawable(new BitmapDrawable(getResources(), tmpBm));
 						}
                     });
@@ -355,13 +390,53 @@ public class MainActivity extends Activity {
                 return true;
             case R.id.action_cut_image:
                 if (mCurrentPhotoPath != null && targetChose) {
-                    new ProcessImageTask2().execute();
+                  //  new ProcessImageTask2().execute();
+                	mImageView.setImageBitmap(getCropImage());
                     targetChose = false;
                 }
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    
+    public Bitmap getCropImage()
+    {
+
+    //getting the size of the new bitmap
+
+        int newHeight = rightX - leftX;
+        int newWidth = downY - upY;
+
+        Bitmap resultingImage = Bitmap.createBitmap(newHeight, newWidth, Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(resultingImage);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+
+      /*  Path path = new Path();
+        for (int i = 0; i < points.size() - 1; i++) {
+
+            path.quadTo((float)points.get(i).x, (float)points.get(i).y, (float)points.get(i+1).x, (float)points.get(i+1).y);
+           // path.lineTo(points.get(i).x, points.get(i).y);
+        }
+
+//closing the shape, connection last point to the first one
+
+        path.quadTo((float)points.get(points.size()-1).x, (float)points.get(points.size()-1).y, (float)points.get(0).x, (float)points.get(0).y);
+*/
+         //drawing user shape
+
+        canvas.drawPath(path, paint);
+
+         //getting image inside the shape
+
+  //      paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
+
+        canvas.drawBitmap(mBitmap, 0, 0, paint);
+
+        return resultingImage;
     }
 
     private class ProcessImageTask extends AsyncTask<Integer, Integer, Integer> {
